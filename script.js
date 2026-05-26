@@ -48,31 +48,79 @@ const outputs = {
 
 const counselorDirectory = [
   {
-    name: "Campus Wellness Cell",
-    area: "On campus / student affairs",
-    cities: ["campus", "college", "university", "hostel"],
-    mode: "In-person or mentor referral",
-    focus: "Academic stress, attendance concerns, adjustment issues",
-    contact: "Contact through your department mentor or student affairs office",
+    name: "Dr. Kavya Reddy",
+    area: "Tirupati",
+    cities: ["tirupati", "renigunta", "chandragiri"],
+    mode: "Student counselling",
+    focus: "Exam anxiety, academic pressure, emotional check-ins",
+    contact: "kavya.reddy.care@example.com",
   },
   {
-    name: "Mind Care Student Support",
+    name: "Mr. Arjun Rao",
+    area: "Tirupati",
+    cities: ["tirupati", "renigunta", "chandragiri"],
+    mode: "Academic wellness coach",
+    focus: "Study routine planning, burnout prevention, attendance recovery",
+    contact: "arjun.rao.wellness@example.com",
+  },
+  {
+    name: "Ms. Nisha Varma",
+    area: "Tirupati",
+    cities: ["tirupati", "renigunta", "chandragiri"],
+    mode: "Online and local referral",
+    focus: "Stress overload, sleep imbalance, productivity recovery",
+    contact: "nisha.varma.support@example.com",
+  },
+  {
+    name: "Mr. Rohan Iyer",
     area: "Chennai",
-    cities: ["chennai", "vellore", "pondicherry", "coimbatore"],
-    mode: "Online and in-person",
+    cities: ["chennai"],
+    mode: "Academic wellness coach",
     focus: "Burnout, exam anxiety, sleep routine planning",
-    contact: "mindcare-support@example.com",
+    contact: "rohan.iyer.support@example.com",
   },
   {
-    name: "Balance Path Counselling",
+    name: "Dr. Asha Menon",
+    area: "Chennai",
+    cities: ["chennai"],
+    mode: "Student counselling",
+    focus: "Academic stress, attendance concerns, adjustment issues",
+    contact: "asha.menon.wellness@example.com",
+  },
+  {
+    name: "Ms. Meera Krishnan",
+    area: "Chennai",
+    cities: ["chennai"],
+    mode: "Online counselling",
+    focus: "Emotional regulation, peer pressure, study overload",
+    contact: "meera.krishnan.care@example.com",
+  },
+  {
+    name: "Ms. Priya Nair",
     area: "Bengaluru",
-    cities: ["bengaluru", "bangalore", "mysuru", "mysore"],
-    mode: "Online sessions",
+    cities: ["bengaluru", "bangalore"],
+    mode: "Online counselling",
     focus: "Study overload, emotional regulation, productivity recovery",
-    contact: "balancepath@example.com",
+    contact: "priya.nair.care@example.com",
   },
   {
-    name: "Saarthi Youth Counselling",
+    name: "Mr. Dev Sharma",
+    area: "Bengaluru",
+    cities: ["bengaluru", "bangalore"],
+    mode: "Student wellness mentor",
+    focus: "Burnout prevention, schedule balance, motivation",
+    contact: "dev.sharma.wellness@example.com",
+  },
+  {
+    name: "Dr. Latha Rao",
+    area: "Bengaluru",
+    cities: ["bengaluru", "bangalore"],
+    mode: "Counselling psychologist",
+    focus: "Anxiety, sleep routine, academic stress",
+    contact: "latha.rao.care@example.com",
+  },
+  {
+    name: "Saarthi Youth Support",
     area: "Mumbai",
     cities: ["mumbai", "thane", "pune", "navi mumbai"],
     mode: "Online and clinic visit",
@@ -80,12 +128,20 @@ const counselorDirectory = [
     contact: "saarthi-youth@example.com",
   },
   {
-    name: "CalmStep Tele-Counselling",
-    area: "India-wide online",
-    cities: ["online", "india", "remote"],
-    mode: "Online",
-    focus: "First support call, triage, wellness planning",
-    contact: "calmstep@example.com",
+    name: "Dr. Riya Kapoor",
+    area: "Mumbai",
+    cities: ["mumbai", "thane", "pune", "navi mumbai"],
+    mode: "Student counselling",
+    focus: "Exam pressure, mood support, stress regulation",
+    contact: "riya.kapoor.care@example.com",
+  },
+  {
+    name: "Mr. Kabir Desai",
+    area: "Mumbai",
+    cities: ["mumbai", "thane", "pune", "navi mumbai"],
+    mode: "Academic wellness coach",
+    focus: "Backlog recovery, attendance planning, burnout risk",
+    contact: "kabir.desai.support@example.com",
   },
 ];
 
@@ -256,40 +312,53 @@ function clearCounselorRecommendations() {
 
 function findCounselors(location) {
   const normalizedLocation = location.trim().toLowerCase();
+  if (!normalizedLocation) {
+    return [];
+  }
+
   const matches = counselorDirectory.filter((counselor) =>
     counselor.cities.some((city) => normalizedLocation.includes(city))
   );
 
-  const campusOption = counselorDirectory[0];
-  const onlineOption = counselorDirectory[counselorDirectory.length - 1];
-  const recommended = matches.length ? matches : [campusOption, onlineOption];
-
-  return [...new Map(recommended.map((counselor) => [counselor.name, counselor])).values()].slice(0, 3);
+  return [...new Map(matches.map((counselor) => [counselor.name, counselor])).values()].slice(0, 3);
 }
 
 function renderCounselorRecommendations(stability, stress, attendance, emotionalRisk) {
   const needsImmediateSupport = stability < 45 || emotionalRisk;
   const couldUseSupport = stability < 75 || stress >= 6 || attendance.status === "slipping";
 
-  if (!needsImmediateSupport && !couldUseSupport) {
-    outputs.counselorPanel.classList.remove("hidden");
-    outputs.counselorTitle.textContent = "Counselor recommendations";
-    outputs.counselorSummary.textContent =
-      "Counselor support is not urgently indicated right now. Keep campus support details available if the student wants to talk.";
-    outputs.counselorList.innerHTML = "";
-    return;
-  }
-
   const counselors = findCounselors(fields.location.value);
   outputs.counselorPanel.classList.remove("hidden");
   outputs.counselorTitle.textContent = needsImmediateSupport
     ? "Recommended counselor support"
-    : "Optional support matches";
-  outputs.counselorSummary.textContent = fields.location.value.trim()
-    ? `Demo recommendations based on risk score and location near ${fields.location.value.trim()}. Verify availability before contacting.`
-    : "Add city or nearby area to improve local matching. For now, these are general support options.";
-
+    : couldUseSupport
+      ? "Optional support matches"
+      : "Suggested wellness contacts";
   outputs.counselorList.innerHTML = "";
+  const location = fields.location.value.trim();
+
+  if (!location) {
+    outputs.counselorSummary.textContent = "Add city or nearby area to show counsellors from the student's town.";
+    return;
+  }
+
+  if (!counselors.length) {
+    outputs.counselorSummary.textContent = `No demo counsellors are listed for ${location} yet. Use local search to find support in the student's town.`;
+    const card = document.createElement("article");
+    card.className = "counselor-card";
+    card.innerHTML = `
+      <strong>Find local counsellors in ${location}</strong>
+      <span>Town-based search | Student support</span>
+      <p>Search nearby counsellors or campus wellness support in the student's own area.</p>
+      <div class="counselor-actions">
+        <a href="https://www.google.com/search?q=${encodeURIComponent(`${location} student counsellor near me`)}" target="_blank" rel="noreferrer">Search nearby</a>
+      </div>
+    `;
+    outputs.counselorList.appendChild(card);
+    return;
+  }
+
+  outputs.counselorSummary.textContent = `Showing ${counselors.length} demo counsellor recommendations from ${location}. Verify real availability before contacting.`;
   counselors.forEach((counselor) => {
     const card = document.createElement("article");
     card.className = "counselor-card";
@@ -303,7 +372,7 @@ function renderCounselorRecommendations(stability, stress, attendance, emotional
       <p>${counselor.focus}</p>
       <div class="counselor-actions">
         <a href="${contactLink}" target="_blank" rel="noreferrer">${counselor.contact.includes("@") ? "Email" : "Referral info"}</a>
-        <a href="https://www.google.com/search?q=${encodeURIComponent(`${counselor.area} student counselor near me`)}" target="_blank" rel="noreferrer">Search nearby</a>
+        <a href="https://www.google.com/search?q=${encodeURIComponent(`${counselor.area} student counsellor near me`)}" target="_blank" rel="noreferrer">Search nearby</a>
       </div>
     `;
     outputs.counselorList.appendChild(card);

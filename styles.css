@@ -107,6 +107,36 @@ body::after {
   line-height: 1.7;
 }
 
+.auth-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  margin-bottom: 18px;
+  padding: 6px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: rgba(232, 248, 238, 0.72);
+}
+
+.auth-tab {
+  min-height: 42px;
+  padding: 9px 12px;
+  border-radius: 11px;
+  background: transparent;
+  box-shadow: none;
+  color: var(--muted);
+}
+
+.auth-tab.active {
+  background: linear-gradient(135deg, var(--primary), #42a987);
+  color: #fff;
+  box-shadow: 0 10px 20px rgba(49, 145, 111, 0.18);
+}
+
+.hidden {
+  display: none !important;
+}
+
 .form-error {
   min-height: 1.3em;
   margin: -2px 0 4px;

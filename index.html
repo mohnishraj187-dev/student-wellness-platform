@@ -10,12 +10,16 @@
     <section class="login-screen" id="loginScreen">
       <form class="login-card" id="loginForm">
         <p class="eyebrow">Student Access</p>
-        <h1>Welcome Back</h1>
+        <h1 id="accessTitle">Welcome Back</h1>
         <p class="login-copy">
-          Create a student profile to continue the wellness check-in. This demo
-          saves the profile and latest analysis on this browser.
+          Sign in if you already have an account, or create a new student profile.
+          This demo saves the profile and latest analysis on this browser.
         </p>
-        <label>
+        <div class="auth-tabs" role="tablist" aria-label="Student access mode">
+          <button class="auth-tab active" id="signInTab" type="button">Sign in</button>
+          <button class="auth-tab" id="signUpTab" type="button">Sign up</button>
+        </div>
+        <label class="signup-only">
           Full name
           <input id="loginName" type="text" placeholder="Enter your name" autocomplete="name" required>
         </label>
@@ -24,15 +28,15 @@
           <input id="loginEmail" type="email" placeholder="name@example.com" autocomplete="email" required>
         </label>
         <label>
-          Create password
-          <input id="loginPassword" type="password" placeholder="Minimum 6 characters" autocomplete="new-password" minlength="6" required>
+          Password
+          <input id="loginPassword" type="password" placeholder="Enter password" autocomplete="current-password" minlength="6" required>
         </label>
-        <label>
+        <label class="signup-only">
           Confirm password
           <input id="loginConfirmPassword" type="password" placeholder="Re-enter password" autocomplete="new-password" minlength="6" required>
         </label>
         <p class="form-error" id="loginError" aria-live="polite"></p>
-        <button type="submit">Continue</button>
+        <button id="loginSubmit" type="submit">Sign in</button>
       </form>
     </section>
 

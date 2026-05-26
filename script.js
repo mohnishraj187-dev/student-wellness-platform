@@ -8,10 +8,16 @@ const loginEmail = document.querySelector("#loginEmail");
 const loginPassword = document.querySelector("#loginPassword");
 const loginConfirmPassword = document.querySelector("#loginConfirmPassword");
 const loginError = document.querySelector("#loginError");
+const accessTitle = document.querySelector("#accessTitle");
+const signInTab = document.querySelector("#signInTab");
+const signUpTab = document.querySelector("#signUpTab");
+const loginSubmit = document.querySelector("#loginSubmit");
+const signupOnlyFields = [...document.querySelectorAll(".signup-only")];
 const activeStudentId = document.querySelector("#activeStudentId");
 const logoutButton = document.querySelector("#logoutButton");
 const form = document.querySelector("#assessmentForm");
 let currentStudentId = "";
+let authMode = "signin";
 
 const fields = {
   name: document.querySelector("#studentName"),
@@ -167,6 +173,27 @@ function saveAccount(name, email, password) {
       savedAt: new Date().toISOString(),
     })
   );
+}
+
+function getAccount(email) {
+  const saved = localStorage.getItem(accountKey(email));
+  return saved ? JSON.parse(saved) : null;
+}
+
+function setAuthMode(mode) {
+  authMode = mode;
+  const isSignUp = mode === "signup";
+  accessTitle.textContent = isSignUp ? "Create Account" : "Welcome Back";
+  loginSubmit.textContent = isSignUp ? "Sign up" : "Sign in";
+  signInTab.classList.toggle("active", !isSignUp);
+  signUpTab.classList.toggle("active", isSignUp);
+  signupOnlyFields.forEach((field) => {
+    field.classList.toggle("hidden", !isSignUp);
+  });
+  loginName.required = isSignUp;
+  loginConfirmPassword.required = isSignUp;
+  loginPassword.autocomplete = isSignUp ? "new-password" : "current-password";
+  loginError.textContent = "";
 }
 
 function getFormData() {
@@ -526,13 +553,40 @@ loginForm.addEventListener("submit", (event) => {
 
   loginError.textContent = "";
 
-  if (!name || !email || !password || !confirmPassword) {
-    loginError.textContent = "Please fill all fields.";
+  if (!email || !password) {
+    loginError.textContent = "Please enter email and password.";
     return;
   }
 
   if (password.length < 6) {
     loginError.textContent = "Password must be at least 6 characters.";
+    return;
+  }
+
+  if (authMode === "signin") {
+    const account = getAccount(email);
+    if (!account) {
+      loginError.textContent = "No account found. Please sign up first.";
+      return;
+    }
+
+    if (account.password !== password) {
+      loginError.textContent = "Incorrect password.";
+      return;
+    }
+
+    loadStudent(email, account.name);
+    return;
+  }
+
+  if (!name || !confirmPassword) {
+    loginError.textContent = "Please fill all signup fields.";
+    return;
+  }
+
+  if (getAccount(email)) {
+    loginError.textContent = "Account already exists. Use sign in.";
+    setAuthMode("signin");
     return;
   }
 
@@ -545,6 +599,14 @@ loginForm.addEventListener("submit", (event) => {
   loadStudent(email, name);
 });
 
+signInTab.addEventListener("click", () => {
+  setAuthMode("signin");
+});
+
+signUpTab.addEventListener("click", () => {
+  setAuthMode("signup");
+});
+
 logoutButton.addEventListener("click", () => {
   saveCurrentStudent();
   currentStudentId = "";
@@ -554,8 +616,9 @@ logoutButton.addEventListener("click", () => {
   loginConfirmPassword.value = "";
   loginError.textContent = "";
   activeStudentId.textContent = "--";
+  setAuthMode("signin");
   loginScreen.classList.remove("hidden");
-  loginName.focus();
+  loginEmail.focus();
 });
 
 form.addEventListener("submit", (event) => {
@@ -585,4 +648,5 @@ inputFields.forEach((field) => {
   });
 });
 
+setAuthMode("signin");
 setInitialState();

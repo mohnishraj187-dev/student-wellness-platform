@@ -1,8 +1,13 @@
 const STORAGE_PREFIX = "student-wellness:";
+const ACCOUNT_PREFIX = "student-wellness-account:";
 
 const loginScreen = document.querySelector("#loginScreen");
 const loginForm = document.querySelector("#loginForm");
-const loginStudentId = document.querySelector("#loginStudentId");
+const loginName = document.querySelector("#loginName");
+const loginEmail = document.querySelector("#loginEmail");
+const loginPassword = document.querySelector("#loginPassword");
+const loginConfirmPassword = document.querySelector("#loginConfirmPassword");
+const loginError = document.querySelector("#loginError");
 const activeStudentId = document.querySelector("#activeStudentId");
 const logoutButton = document.querySelector("#logoutButton");
 const form = document.querySelector("#assessmentForm");
@@ -88,6 +93,26 @@ function storageKey(studentId) {
   return `${STORAGE_PREFIX}${studentId}`;
 }
 
+function accountKey(email) {
+  return `${ACCOUNT_PREFIX}${email}`;
+}
+
+function normalizeEmail(email) {
+  return email.trim().toLowerCase();
+}
+
+function saveAccount(name, email, password) {
+  localStorage.setItem(
+    accountKey(email),
+    JSON.stringify({
+      name,
+      email,
+      password,
+      savedAt: new Date().toISOString(),
+    })
+  );
+}
+
 function getFormData() {
   return {
     name: fields.name.value.trim(),
@@ -137,7 +162,7 @@ function hasCheckInInput() {
   );
 }
 
-function loadStudent(studentId) {
+function loadStudent(studentId, profileName = "") {
   resetForm();
   const saved = localStorage.getItem(storageKey(studentId));
 
@@ -157,6 +182,9 @@ function loadStudent(studentId) {
 
   currentStudentId = studentId;
   activeStudentId.textContent = studentId;
+  if (!fields.name.value && profileName) {
+    fields.name.value = profileName;
+  }
   loginScreen.classList.add("hidden");
 
   if (saved || hasCheckInInput()) {
@@ -422,22 +450,43 @@ function analyze() {
 
 loginForm.addEventListener("submit", (event) => {
   event.preventDefault();
-  const studentId = loginStudentId.value.trim().toUpperCase();
+  const name = loginName.value.trim();
+  const email = normalizeEmail(loginEmail.value);
+  const password = loginPassword.value;
+  const confirmPassword = loginConfirmPassword.value;
 
-  if (!studentId) {
+  loginError.textContent = "";
+
+  if (!name || !email || !password || !confirmPassword) {
+    loginError.textContent = "Please fill all fields.";
     return;
   }
 
-  loadStudent(studentId);
+  if (password.length < 6) {
+    loginError.textContent = "Password must be at least 6 characters.";
+    return;
+  }
+
+  if (password !== confirmPassword) {
+    loginError.textContent = "Passwords do not match.";
+    return;
+  }
+
+  saveAccount(name, email, password);
+  loadStudent(email, name);
 });
 
 logoutButton.addEventListener("click", () => {
   saveCurrentStudent();
   currentStudentId = "";
-  loginStudentId.value = "";
+  loginName.value = "";
+  loginEmail.value = "";
+  loginPassword.value = "";
+  loginConfirmPassword.value = "";
+  loginError.textContent = "";
   activeStudentId.textContent = "--";
   loginScreen.classList.remove("hidden");
-  loginStudentId.focus();
+  loginName.focus();
 });
 
 form.addEventListener("submit", (event) => {

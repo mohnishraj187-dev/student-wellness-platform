@@ -67,6 +67,13 @@ body {
   line-height: 1.7;
 }
 
+.form-error {
+  min-height: 1.3em;
+  margin: -2px 0 4px;
+  color: var(--danger);
+  font-weight: 700;
+}
+
 .app-shell {
   width: min(1180px, calc(100% - 32px));
   margin: 0 auto;

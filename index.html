@@ -12,13 +12,26 @@
         <p class="eyebrow">Student Access</p>
         <h1>Welcome Back</h1>
         <p class="login-copy">
-          Enter a student ID to continue the wellness check-in. Each ID keeps its
-          own saved profile and latest analysis on this browser.
+          Create a student profile to continue the wellness check-in. This demo
+          saves the profile and latest analysis on this browser.
         </p>
         <label>
-          Student ID
-          <input id="loginStudentId" type="text" placeholder="Example: STU1024" autocomplete="username" required>
+          Full name
+          <input id="loginName" type="text" placeholder="Enter your name" autocomplete="name" required>
         </label>
+        <label>
+          Email ID
+          <input id="loginEmail" type="email" placeholder="name@example.com" autocomplete="email" required>
+        </label>
+        <label>
+          Create password
+          <input id="loginPassword" type="password" placeholder="Minimum 6 characters" autocomplete="new-password" minlength="6" required>
+        </label>
+        <label>
+          Confirm password
+          <input id="loginConfirmPassword" type="password" placeholder="Re-enter password" autocomplete="new-password" minlength="6" required>
+        </label>
+        <p class="form-error" id="loginError" aria-live="polite"></p>
         <button type="submit">Continue</button>
       </form>
     </section>

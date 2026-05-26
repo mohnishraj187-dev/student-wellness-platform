@@ -552,6 +552,11 @@ ol {
   font-size: 1.04rem;
 }
 
+.search-card {
+  border-style: dashed;
+  background: linear-gradient(135deg, rgba(232, 248, 238, 0.88), rgba(227, 247, 255, 0.82));
+}
+
 .counselor-card span,
 .counselor-card p {
   color: var(--muted);

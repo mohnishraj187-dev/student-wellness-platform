@@ -60,6 +60,7 @@ const counselorDirectory = [
     mode: "Student counselling",
     focus: "Exam anxiety, academic pressure, emotional check-ins",
     contact: "kavya.reddy.care@example.com",
+    site: "https://www.practo.com/tirupati/psychologist",
   },
   {
     name: "Mr. Arjun Rao",
@@ -68,6 +69,7 @@ const counselorDirectory = [
     mode: "Academic wellness coach",
     focus: "Study routine planning, burnout prevention, attendance recovery",
     contact: "arjun.rao.wellness@example.com",
+    site: "https://www.justdial.com/Tirupati/Counselling-Services",
   },
   {
     name: "Ms. Nisha Varma",
@@ -76,6 +78,7 @@ const counselorDirectory = [
     mode: "Online and local referral",
     focus: "Stress overload, sleep imbalance, productivity recovery",
     contact: "nisha.varma.support@example.com",
+    site: "https://www.lybrate.com/tirupati/psychologist",
   },
   {
     name: "Mr. Rohan Iyer",
@@ -84,6 +87,7 @@ const counselorDirectory = [
     mode: "Academic wellness coach",
     focus: "Burnout, exam anxiety, sleep routine planning",
     contact: "rohan.iyer.support@example.com",
+    site: "https://www.practo.com/chennai/psychologist",
   },
   {
     name: "Dr. Asha Menon",
@@ -92,6 +96,7 @@ const counselorDirectory = [
     mode: "Student counselling",
     focus: "Academic stress, attendance concerns, adjustment issues",
     contact: "asha.menon.wellness@example.com",
+    site: "https://www.justdial.com/Chennai/Counselling-Services",
   },
   {
     name: "Ms. Meera Krishnan",
@@ -100,6 +105,7 @@ const counselorDirectory = [
     mode: "Online counselling",
     focus: "Emotional regulation, peer pressure, study overload",
     contact: "meera.krishnan.care@example.com",
+    site: "https://www.lybrate.com/chennai/psychologist",
   },
   {
     name: "Ms. Priya Nair",
@@ -108,6 +114,7 @@ const counselorDirectory = [
     mode: "Online counselling",
     focus: "Study overload, emotional regulation, productivity recovery",
     contact: "priya.nair.care@example.com",
+    site: "https://www.practo.com/bangalore/psychologist",
   },
   {
     name: "Mr. Dev Sharma",
@@ -116,6 +123,7 @@ const counselorDirectory = [
     mode: "Student wellness mentor",
     focus: "Burnout prevention, schedule balance, motivation",
     contact: "dev.sharma.wellness@example.com",
+    site: "https://www.justdial.com/Bangalore/Counselling-Services",
   },
   {
     name: "Dr. Latha Rao",
@@ -124,6 +132,7 @@ const counselorDirectory = [
     mode: "Counselling psychologist",
     focus: "Anxiety, sleep routine, academic stress",
     contact: "latha.rao.care@example.com",
+    site: "https://www.lybrate.com/bangalore/psychologist",
   },
   {
     name: "Saarthi Youth Support",
@@ -132,6 +141,7 @@ const counselorDirectory = [
     mode: "Online and clinic visit",
     focus: "Stress overload, family pressure, academic stability",
     contact: "saarthi-youth@example.com",
+    site: "https://www.practo.com/mumbai/psychologist",
   },
   {
     name: "Dr. Riya Kapoor",
@@ -140,6 +150,7 @@ const counselorDirectory = [
     mode: "Student counselling",
     focus: "Exam pressure, mood support, stress regulation",
     contact: "riya.kapoor.care@example.com",
+    site: "https://www.justdial.com/Mumbai/Counselling-Services",
   },
   {
     name: "Mr. Kabir Desai",
@@ -148,6 +159,7 @@ const counselorDirectory = [
     mode: "Academic wellness coach",
     focus: "Backlog recovery, attendance planning, burnout risk",
     contact: "kabir.desai.support@example.com",
+    site: "https://www.lybrate.com/mumbai/psychologist",
   },
 ];
 
@@ -399,11 +411,23 @@ function renderCounselorRecommendations(stability, stress, attendance, emotional
       <p>${counselor.focus}</p>
       <div class="counselor-actions">
         <a href="${contactLink}" target="_blank" rel="noreferrer">${counselor.contact.includes("@") ? "Email" : "Referral info"}</a>
-        <a href="https://www.google.com/search?q=${encodeURIComponent(`${counselor.area} student counsellor near me`)}" target="_blank" rel="noreferrer">Search nearby</a>
+        <a href="${counselor.site}" target="_blank" rel="noreferrer">Website</a>
       </div>
     `;
     outputs.counselorList.appendChild(card);
   });
+
+  const searchCard = document.createElement("article");
+  searchCard.className = "counselor-card search-card";
+  searchCard.innerHTML = `
+    <strong>Search more nearby counsellors</strong>
+    <span>${location} | Local support search</span>
+    <p>Use this separate search option to find more real counsellors or campus support near the student's town.</p>
+    <div class="counselor-actions">
+      <a href="https://www.google.com/search?q=${encodeURIComponent(`${location} student counsellor near me`)}" target="_blank" rel="noreferrer">Search nearby</a>
+    </div>
+  `;
+  outputs.counselorList.appendChild(searchCard);
 }
 
 function setInitialState() {
